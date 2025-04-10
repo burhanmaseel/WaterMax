@@ -41,9 +41,10 @@ class WmDetector():
         Adapted from https://github.com/jwkirchenbauer/lm-watermarking
         """
         if self.seeding == 'hash':
-            seed = self.seed
+            seed = np.int64(self.seed)
+            salt = np.int64(self.salt_key)
             for i in input_ids:
-                seed = (seed * self.salt_key + i) % (2 ** 64 - 1)
+                seed = int(np.mod(seed * salt + np.int64(i), np.int64(2**63 - 1)))
         elif self.seeding == 'additive':
             seed = self.salt_key * torch.sum(input_ids)
             seed = self.hashint(seed)
@@ -195,9 +196,10 @@ class WmGenerator():
         Adapted from https://github.com/jwkirchenbauer/lm-watermarking
         """
         if self.seeding == 'hash':
-            seed = self.seed
+            seed = np.int64(self.seed)
+            salt = np.int64(self.salt_key)
             for i in input_ids:
-                seed = (seed * self.salt_key + i.item()) % (2 ** 64 - 1)
+                seed = int(np.mod(seed * salt + np.int64(i.item()), np.int64(2**63 - 1)))
         elif self.seeding == 'additive':
             seed = self.salt_key * torch.sum(input_ids).item()
             seed = self.hashint(seed)
@@ -334,9 +336,10 @@ class RobustWmSentenceGenerator():
         Adapted from https://github.com/jwkirchenbauer/lm-watermarking
         """
         if self.seeding == 'hash':
-            seed = self.seed
+            seed = np.int64(self.seed)
+            salt = np.int64(self.salt_key)
             for jj,i in enumerate(input_ids):
-                seed = int(np.mod(seed * self.salt_key + i, self.hash_size))
+                seed = int(np.mod(seed * salt + np.int64(i), np.int64(2**63 - 1)))
                 #print(jj,i,seed)
         elif self.seeding == 'additive':
             seed = self.salt_key * np.sum(input_ids)
@@ -528,9 +531,10 @@ class GaussianSentenceWm(WmDetector):
         Adapted from https://github.com/jwkirchenbauer/lm-watermarking
         """
         if self.seeding == 'hash':
-            seed = self.seed
+            seed = np.int64(self.seed)
+            salt = np.int64(self.salt_key)
             for i in input_ids:
-                seed = int(np.mod(seed * self.salt_key + i, self.hash_size))
+                seed = int(np.mod(seed * salt + np.int64(i), np.int64(2**63 - 1)))
         elif self.seeding == 'additive':
             seed = self.salt_key * torch.sum(input_ids)
             seed = self.hashint(seed)
@@ -702,9 +706,10 @@ class SecureGaussianSentenceWm(WmDetector):
         Adapted from https://github.com/jwkirchenbauer/lm-watermarking
         """
         if self.seeding == 'hash':
-            seed = self.seed
+            seed = np.int64(self.seed)
+            salt = np.int64(self.salt_key)
             for i in input_ids:
-                seed = int(np.mod(seed * self.salt_key + i, self.hash_size))
+                seed = int(np.mod(seed * salt + np.int64(i), np.int64(2**63 - 1)))
         elif self.seeding == 'additive':
             seed = self.salt_key * torch.sum(input_ids)
             seed = self.hashint(seed)
@@ -880,10 +885,8 @@ class GroupAaronson(WmGenerator):
             probs_sort.div_(probs_sort.sum(dim=-1, keepdim=True))
             #print(probs_sort)
             # select argmax ( r^(1/p) )
-            next_token = torch.multinomial(probs_sort, num_samples=1)
-            next_token = torch.gather(probs_idx, -1, next_token)
-            #self.dist['tv'].append(1-probs_sort[:, next_token])
-
+            next_token = torch.multinomial(probs_sort, num_samples=1) # one hot of next token, ordered by original probs
+            next_token = torch.gather(probs_idx, -1, next_token) # one hot of next token, ordered by vocab
         else:
             next_token = torch.argmax(logits, dim=-1)
         next_token = next_token.reshape(-1)
@@ -1143,9 +1146,10 @@ class NewGaussianSentenceWm(WmDetector):
         Adapted from https://github.com/jwkirchenbauer/lm-watermarking
         """
         if self.seeding == 'hash':
-            seed = self.seed
+            seed = np.int64(self.seed)
+            salt = np.int64(self.salt_key)
             for i in input_ids:
-                seed = int(np.mod(seed * self.salt_key + i, self.hash_size))
+                seed = int(np.mod(seed * salt + np.int64(i), np.int64(2**63 - 1)))
         elif self.seeding == 'additive':
             seed = self.salt_key * torch.sum(input_ids)
             seed = self.hashint(seed)
@@ -1340,9 +1344,10 @@ class NewRobustWmSentenceGenerator():
         Adapted from https://github.com/jwkirchenbauer/lm-watermarking
         """
         if self.seeding == 'hash':
-            seed = self.seed
+            seed = np.int64(self.seed)
+            salt = np.int64(self.salt_key)
             for jj,i in enumerate(input_ids):
-                seed = int(np.mod(seed * self.salt_key + i, self.hash_size))
+                seed = int(np.mod(seed * salt + np.int64(i), np.int64(2**63 - 1)))
                 #print(jj,i,seed)
         elif self.seeding == 'additive':
             seed = self.salt_key * np.sum(input_ids)

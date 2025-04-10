@@ -27,7 +27,8 @@ def parse_arguments():
     parser.add_argument('--seeds', nargs='+', type=int)
 
     parser.add_argument('--ngram', type=int, default=8)
-    parser.add_argument('--model_name', type=str, default='microsoft/Phi-3-mini-4k-instruct')
+    # parser.add_argument('--model_name', type=str, default='microsoft/Phi-3-mini-4k-instruct')
+    parser.add_argument('--model_name', type=str, default='microsoft/Phi-3.5-mini-instruct')
     parser.add_argument('--outputdir', type=str, default='results/benchmark/')
     parser.add_argument('--standard_outputpath', type=str, default='./MarkMyWords/run/benchmark/')
 

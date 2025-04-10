@@ -23,7 +23,8 @@ def parse_arguments():
     parser = argparse.ArgumentParser('Args', add_help=False)
     parser.add_argument('--seed', type=int)
     parser.add_argument('--ngram', type=int, default=8)
-    parser.add_argument('--model_name', type=str, default='microsoft/Phi-3-mini-4k-instruct')
+    # parser.add_argument('--model_name', type=str, default='microsoft/Phi-3-mini-4k-instruct')
+    parser.add_argument('--model_name', type=str, default='microsoft/Phi-3.5-mini-instruct')
     parser.add_argument('--outputdir', type=str, default='results/interactive_prompting/')
     parser.add_argument('--param1','--n', type=int_or_float, default=3) #Number of texts generated per splits
     parser.add_argument('--param2','--N', type=opt_int_or_float, default=None) #Number of splits
