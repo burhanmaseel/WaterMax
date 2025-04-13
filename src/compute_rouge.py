@@ -42,9 +42,9 @@ def compute_rouge(config, res_path):
     if config.wm == 'sentence-wm': 
          #Base WaterMax direcly uses huggingface generator contrary
          #to the other wm schemes which use Meta's implementation of sampling
-         config.param1=1
-         config.param2=1
-         config.beam_chunk_size = 0
+         config.param1=2
+         config.param2=2
+         config.beam_chunk_size = 6
     elif config.wm == 'aaronson':
         config.temperature = config.param1
         config.wm = 'nowm'
